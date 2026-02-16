@@ -92,6 +92,7 @@ install(TARGETS camera_component
   DESTINATION lib)
 
 install(DIRECTORY
+  config
   launch
   DESTINATION share/${PROJECT_NAME}/
 )

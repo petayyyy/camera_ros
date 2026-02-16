@@ -1,0 +1,26 @@
+image_width: 320
+image_height: 240
+camera_name: ov5647
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [160.1941 ,   0.     , 155.38935,
+           0.     , 159.21636, 117.88634,
+           0.     ,   0.     ,   1.     ]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.286640, 0.062722, -0.002792, 0.000926, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1., 0., 0.,
+         0., 1., 0.,
+         0., 0., 1.]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [113.63321,   0.     , 156.14252,   0.     ,
+           0.     , 126.36574, 114.9875 ,   0.     ,
+           0.     ,   0.     ,   1.     ,   0.     ]

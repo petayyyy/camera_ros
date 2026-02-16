@@ -1,84 +1,58 @@
-from ament_index_python.resources import has_resource
-
+import os
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
-from launch.launch_description import LaunchDescription
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
 
-from launch_ros.actions import ComposableNodeContainer
-from launch_ros.descriptions import ComposableNode
+def generate_launch_description():
+    # ------------------------------------------------------------
+    # 1. Определяем путь к директории config в исходниках пакета
+    #    (предполагается, что launch-файл лежит в camera_ros/launch/)
+    # ------------------------------------------------------------
+    launch_dir = os.path.dirname(os.path.abspath(__file__))
+    src_config_dir = os.path.join(launch_dir, '..', 'config')
+    # Нормализуем путь (убираем лишние '..')
+    src_config_dir = os.path.abspath(src_config_dir)
 
+    # ------------------------------------------------------------
+    # 2. Параметры из install (можно оставить или тоже перевести на src)
+    # ------------------------------------------------------------
+    pkg_share = get_package_share_directory('camera_ros')
 
-def generate_launch_description() -> LaunchDescription:
-    """
-    Generate a launch description with for the camera node and a visualiser.
+    sensor_type = LaunchConfiguration('sensor')
+    width = LaunchConfiguration('width')
+    height = LaunchConfiguration('height')
 
-    Returns
-    -------
-        LaunchDescription: the launch description
+    # Формируем имя файла калибровки: sensor_widthxheight.yaml
+    calib_file = [sensor_type, TextSubstitution(text='_'), width,
+                  TextSubstitution(text='x'), height, TextSubstitution(text='.yaml')]
 
-    """
-    # parameters
-    camera_param_name = "camera"
-    camera_param_default = str(0)
-    camera_param = LaunchConfiguration(
-        camera_param_name,
-        default=camera_param_default,
-    )
-    camera_launch_arg = DeclareLaunchArgument(
-        camera_param_name,
-        default_value=camera_param_default,
-        description="camera ID or name"
-    )
-
-    format_param_name = "format"
-    format_param_default = str()
-    format_param = LaunchConfiguration(
-        format_param_name,
-        default=format_param_default,
-    )
-    format_launch_arg = DeclareLaunchArgument(
-        format_param_name,
-        default_value=format_param_default,
-        description="pixel format"
-    )
-
-    # camera node
-    composable_nodes = [
-        ComposableNode(
-            package='camera_ros',
-            plugin='camera::CameraNode',
-            parameters=[{
-                "camera": camera_param,
-                "width": 640,
-                "height": 480,
-                "format": format_param,
-            }],
-            extra_arguments=[{'use_intra_process_comms': True}],
-        ),
-    ]
-
-    # optionally add ImageViewNode to show camera image
-    if has_resource("packages", "image_view"):
-        composable_nodes += [
-            ComposableNode(
-                package='image_view',
-                plugin='image_view::ImageViewNode',
-                remappings=[('/image', '/camera/image_raw')],
-                extra_arguments=[{'use_intra_process_comms': True}],
-            ),
-        ]
-
-    # composable nodes in single container
-    container = ComposableNodeContainer(
-        name='camera_container',
-        namespace='',
-        package='rclcpp_components',
-        executable='component_container',
-        composable_node_descriptions=composable_nodes,
-    )
+    # Собираем полный путь к файлу калибровки в src-конфиге
+    calib_path = PathJoinSubstitution([TextSubstitution(text=src_config_dir), calib_file])
+    calib_url = [TextSubstitution(text='file://'), calib_path]
 
     return LaunchDescription([
-        container,
-        camera_launch_arg,
-        format_launch_arg,
+        DeclareLaunchArgument('sensor', default_value='ov5647'),
+        DeclareLaunchArgument('width', default_value='640'),
+        DeclareLaunchArgument('height', default_value='480'),
+        DeclareLaunchArgument('fps_limit', default_value='[16666, 16666]'),
+        DeclareLaunchArgument('camera', default_value='0'),
+
+        Node(
+            package='camera_ros',
+            executable='camera_node',
+            name=sensor_type,
+            parameters=[
+                os.path.join(pkg_share, 'config', 'params.yaml'),  # из install (можно заменить)
+                {
+                    'camera': LaunchConfiguration('camera'),
+                    'width': width,
+                    'height': height,
+                    'FrameDurationLimits': LaunchConfiguration('fps_limit'),
+                    'camera_info_url': calib_url,
+                }
+            ],
+            output='screen'
+        )
     ])

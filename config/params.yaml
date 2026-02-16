@@ -1,0 +1,22 @@
+ov5647:
+  ros__parameters:
+    width: 640
+    height: 480
+    format: "YUYV"
+    FrameDurationLimits: [16666, 16666]
+    role: "video"
+
+imx219:
+  ros__parameters:
+    width: 1280
+    height: 720
+    format: "SRGGB10"
+    FrameDurationLimits: [33333, 33333]
+    role: "video"
+
+imx708:
+  ros__parameters:
+    width: 2304
+    height: 1296
+    format: "BGR888"
+    FrameDurationLimits: [40000, 40000]

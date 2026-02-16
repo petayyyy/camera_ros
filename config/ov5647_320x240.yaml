@@ -1,0 +1,70 @@
+board_height: 5
+board_width: 8
+calibration_date: '2025-12-25 16:40:05'
+camera_matrix:
+  cols: 3
+  data:
+  - 166.23942373
+  - 0.0
+  - 162.19011247
+  - 0.0
+  - 166.5880924
+  - 109.82227736
+  - 0.0
+  - 0.0
+  - 1.0
+  rows: 3
+camera_name: calibrated_camera
+distortion_coefficients:
+  cols: 14
+  data:
+  - 2.15356885e-01
+  - -1.17472846e-01
+  - -3.06197672e-04
+  - -1.09444025e-04
+  - -4.53657258e-03
+  - 5.73090623e-01
+  - -1.27574577e-01
+  - -2.86125589e-02
+  - 0.00000000
+  - 0.00000000
+  - 0.00000000
+  - 0.00000000
+  - 0.00000000
+  - 0.00000000
+  rows: 1
+distortion_model: plumb_bob
+image_height: 240
+image_width: 320
+num_calibration_frames: 36
+projection_matrix:
+  cols: 4
+  data:
+  - 166.23942373
+  - 0.0
+  - 162.19011247
+  - 0.0
+  - 0.0
+  - 166.5880924
+  - 109.82227736
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+  - 0.0
+  rows: 3
+rectification_matrix:
+  cols: 3
+  data:
+  - 1.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+  rows: 3
+reprojection_error: 0.06541677398841755
+square_size: 0.03
