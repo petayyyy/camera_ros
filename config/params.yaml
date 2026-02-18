@@ -3,7 +3,7 @@ ov5647:
     width: 640
     height: 480
     format: "YUYV"
-    FrameDurationLimits: [16666, 16666]
+    FrameDurationLimits: [16971, 16971]
     role: "video"
 
 imx219:

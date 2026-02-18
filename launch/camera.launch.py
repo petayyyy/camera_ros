@@ -35,8 +35,8 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('sensor', default_value='ov5647'),
         DeclareLaunchArgument('width', default_value='640'),
-        DeclareLaunchArgument('height', default_value='480'),
-        DeclareLaunchArgument('fps_limit', default_value='[16666, 16666]'),
+        DeclareLaunchArgument('height', default_value='320'),
+        DeclareLaunchArgument('fps_limit', default_value='[16971, 16971]'),
         DeclareLaunchArgument('camera', default_value='0'),
 
         Node(

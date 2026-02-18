@@ -1,50 +1,31 @@
-board_height: 5
-board_width: 8
-calibration_date: '2025-12-25 16:40:05'
+image_width: 640
+image_height: 480
+camera_name: ov5647
 camera_matrix:
+  rows: 3
   cols: 3
   data:
-  - 323.96783873654294
+  - 313.91747355381085
   - 0.0
-  - 314.7787915621276
+  - 315.8852043995971
   - 0.0
-  - 324.87460573693136
-  - 235.2702630045528
+  - 315.4740065983454
+  - 228.22917068648076
   - 0.0
   - 0.0
   - 1.0
-  rows: 3
-camera_name: calibrated_camera
+distortion_model: plumb_bob
 distortion_coefficients:
+  rows: 1
   cols: 5
   data:
-  - -0.35129921844636336
-  - 0.15450037329459976
-  - -0.003387498890563837
-  - 0.00042435371660032615
-  - -0.03393242708107889
-  rows: 1
-distortion_model: plumb_bob
-image_height: 480
-image_width: 640
-num_calibration_frames: 36
-projection_matrix:
-  cols: 4
-  data:
-  - 323.96783873654294
-  - 0.0
-  - 314.7787915621276
-  - 0.0
-  - 0.0
-  - 324.87460573693136
-  - 235.2702630045528
-  - 0.0
-  - 0.0
-  - 0.0
-  - 1.0
-  - 0.0
-  rows: 3
+  - -0.3373208315541661
+  - 0.13760055018502604
+  - -0.00018906758580775605
+  - -7.269970629010719e-06
+  - -0.028500188681027255
 rectification_matrix:
+  rows: 3
   cols: 3
   data:
   - 1.0
@@ -56,6 +37,20 @@ rectification_matrix:
   - 0.0
   - 0.0
   - 1.0
+projection_matrix:
   rows: 3
-reprojection_error: 0.06541677398841755
-square_size: 0.03
+  cols: 4
+  data:
+  - 313.91747355381085
+  - 0.0
+  - 315.8852043995971
+  - 0.0
+  - 0.0
+  - 315.4740065983454
+  - 228.22917068648076
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+  - 0.0
+# RMSE 0.700278 px
