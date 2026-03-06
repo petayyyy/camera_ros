@@ -10,7 +10,7 @@ imx219:
   ros__parameters:
     width: 1280
     height: 720
-    format: "SRGGB10"
+    format: "RGB888"
     FrameDurationLimits: [33333, 33333]
     role: "video"
 
@@ -18,5 +18,23 @@ imx708:
   ros__parameters:
     width: 2304
     height: 1296
-    format: "BGR888"
+    format: "RGB888"
     FrameDurationLimits: [40000, 40000]
+
+camera_tf_0:
+  ros__parameters:
+    parent_frame: "base_link"
+    xyz: [0.065, 0.0, -0.03]
+    rpy: [-1.5707963, 0.0, 3.1415926]
+
+camera_tf_1:
+  ros__parameters:
+    parent_frame: "base_link"
+    xyz: [0.065, 0.0, -0.03]
+    rpy: [-1.5707963, 0.0, 3.1415926]
+
+camera_tf_2:
+  ros__parameters:
+    parent_frame: "base_link"
+    xyz: [0.065, 0.0, -0.03]
+    rpy: [-1.5707963, 0.0, 3.1415926]

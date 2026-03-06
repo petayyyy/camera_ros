@@ -324,11 +324,24 @@ CameraNode::CameraNode(const rclcpp::NodeOptions &options)
   param_descr_use_node_time.read_only = true;
   use_node_time = declare_parameter<bool>("use_node_time", false, param_descr_use_node_time);
 
+  // topic_base: if set, publish to /camera_{id}/image_raw and /camera_{id}/camera_info (absolute);
+  // otherwise use node-relative ~/image_raw, ~/camera_info (legacy)
+  rcl_interfaces::msg::ParameterDescriptor param_descr_topic_base;
+  param_descr_topic_base.description = "base topic path, e.g. /camera_0 for /camera_0/image_raw and /camera_0/camera_info";
+  param_descr_topic_base.read_only = true;
+  std::string topic_base = declare_parameter<std::string>("topic_base", "", param_descr_topic_base);
+  while (!topic_base.empty() && topic_base.back() == '/') {
+    topic_base.pop_back();
+  }
+
+  const std::string image_topic = topic_base.empty() ? "~/image_raw" : (topic_base + "/image_raw");
+  const std::string image_compressed_topic = topic_base.empty() ? "~/image_raw/compressed" : (topic_base + "/image_raw/compressed");
+  const std::string camera_info_topic = topic_base.empty() ? "~/camera_info" : (topic_base + "/camera_info");
+
   // publisher for raw and compressed image
-  pub_image = this->create_publisher<sensor_msgs::msg::Image>("~/image_raw", 1);
-  pub_image_compressed =
-    this->create_publisher<sensor_msgs::msg::CompressedImage>("~/image_raw/compressed", 1);
-  pub_ci = this->create_publisher<sensor_msgs::msg::CameraInfo>("~/camera_info", 1);
+  pub_image = this->create_publisher<sensor_msgs::msg::Image>(image_topic, 1);
+  pub_image_compressed = this->create_publisher<sensor_msgs::msg::CompressedImage>(image_compressed_topic, 1);
+  pub_ci = this->create_publisher<sensor_msgs::msg::CameraInfo>(camera_info_topic, 1);
 
   // start camera manager and check for cameras
   camera_manager.start();
@@ -358,6 +371,15 @@ CameraNode::CameraNode(const rclcpp::NodeOptions &options)
   case rclcpp::ParameterType::PARAMETER_STRING:
   {
     const std::string &name = camera_id.get<rclcpp::ParameterType::PARAMETER_STRING>();
+    // Строка из цифр — трактуем как 0-based индекс (для совместимости с launch, где camera_id 1 = первая камера)
+    if (!name.empty() && std::all_of(name.begin(), name.end(), [](unsigned char c) { return std::isdigit(c); })) {
+      const size_t id = static_cast<size_t>(std::stoul(name));
+      if (id < camera_manager.cameras().size()) {
+        camera = camera_manager.cameras().at(id);
+        RCLCPP_DEBUG_STREAM(get_logger(), "found camera by index (string): " << id);
+        break;
+      }
+    }
     camera = camera_manager.get(name);
     if (!camera) {
       RCLCPP_INFO_STREAM(get_logger(), camera_manager);

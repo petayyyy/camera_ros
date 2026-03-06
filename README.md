@@ -161,7 +161,12 @@ and then set via the control `FrameDurationLimits`, if it is exposed by the came
 ```sh
 # set fixed framerate of 20 Hz (50 ms)
 ros2 run camera_ros camera_node --ros-args -p FrameDurationLimits:="[50000,50000]"
+# high framerate example (e.g. 120 fps → 8333 µs)
+ros2 run camera_ros camera_node --ros-args -p FrameDurationLimits:="[8333,8333]"
 ```
+
+**Where does the "minimum" frame duration (e.g. 16971 µs) come from?**  
+The range you see in the parameter description (and any "outside of range" error) is **not** hardcoded in this package. After the camera is configured (resolution, format), the node calls `camera->controls()` and gets a **ControlInfoMap** from **libcamera / the camera pipeline** (e.g. Raspberry Pi PiSP). The pipeline fills in min/max for each control based on the **current stream configuration**. So a value like 16971 µs (~59 fps) is the **minimum frame duration** that the pipeline reports for that resolution and format — i.e. the pipeline’s "maximum fps" in that mode. To get 100+ fps you need a **resolution** at which the pipeline reports a lower min duration (e.g. 640×480 for IMX219 can allow ~103 fps). The node allows requesting `FrameDurationLimits` outside the reported range; the pipeline will then clamp or reject the value when the camera starts.
 
 
 ## Calibration

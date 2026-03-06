@@ -376,12 +376,20 @@ ParameterHandler::validate_new_parameters(const std::vector<rclcpp::Parameter> &
       continue;
     }
 
-    // check bounds
+    // check bounds (skip for FrameDurationLimits: let pipeline accept or clamp at start)
     const libcamera::ControlInfo &ci = camera_controls.at(parameter.get_name()).info;
     if (value < ci.min() || value > ci.max()) {
-      msgs_valid_check.push_back(
-        "parameter value " + value.toString() + " outside of range: " + ci.toString());
-      continue;
+      if (parameter.get_name() == libcamera::controls::FrameDurationLimits.name()) {
+        RCLCPP_WARN_STREAM(node->get_logger(),
+                           "FrameDurationLimits " << value.toString()
+                           << " outside pipeline range " << ci.toString()
+                           << " — passing to pipeline (may clamp or fail at start)");
+      }
+      else {
+        msgs_valid_check.push_back(
+          "parameter value " + value.toString() + " outside of range: " + ci.toString());
+        continue;
+      }
     }
 
     // success, show debug message
