@@ -96,7 +96,7 @@ def generate_launch_description():
         ),
     ]
 
-    # Публикация статического TF камеры относительно дрона
+    # Publish static camera TF relative to the drone
     for cam_id, tf_cfg in camera_tfs.items():
         ld_items.append(
             Node(

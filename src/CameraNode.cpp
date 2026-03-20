@@ -371,7 +371,7 @@ CameraNode::CameraNode(const rclcpp::NodeOptions &options)
   case rclcpp::ParameterType::PARAMETER_STRING:
   {
     const std::string &name = camera_id.get<rclcpp::ParameterType::PARAMETER_STRING>();
-    // Строка из цифр — трактуем как 0-based индекс (для совместимости с launch, где camera_id 1 = первая камера)
+    // All-digit string: treat as 0-based index (launch compatibility: camera_id 1 = first camera)
     if (!name.empty() && std::all_of(name.begin(), name.end(), [](unsigned char c) { return std::isdigit(c); })) {
       const size_t id = static_cast<size_t>(std::stoul(name));
       if (id < camera_manager.cameras().size()) {
